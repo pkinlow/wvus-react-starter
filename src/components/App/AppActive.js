@@ -1,9 +1,11 @@
 import React from "react";
 
 function AppActive(props) {
+  const { data } = props;
+
   return (
     <div className="App">
-      This is your App
+      Starter App. {data.greeting || ""}
     </div>
   );
 }

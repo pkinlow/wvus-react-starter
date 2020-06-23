@@ -5,14 +5,15 @@ import AppLoad from "./AppLoad";
 import AppInactive from "./AppInactive";
 import AppActive from "./AppActive";
 import initialState from "../../initialState";
+import { mockRequest } from "../../services/appRequest";
 import helpers from "../../helpers/helpers";
 import appSettings from "../../settings/appSettings";
+const COMPONENT_DID_MOUNT = [];
 
 function App(props) {
   const initialStateVal = getInitialState();
-  const [state, setState] = useState(initialStateVal);
-
-  const isTrue = state && state.app && state.app.status && state.app.status.something ? true : false;
+  const [data, setData] = useState(initialStateVal.data);
+  const [app, setApp] = useState(initialStateVal.app);
 
   useEffect(() => {
     // Component Did Mount
@@ -21,7 +22,7 @@ function App(props) {
     return () => {
       // Clean Up Logic
     };
-  }, []);
+  }, COMPONENT_DID_MOUNT);
 
   async function init() {
     // Include App Init Logic
@@ -31,9 +32,10 @@ function App(props) {
 
     try {
       // Simulate Async API Request 
-      await new Promise((res) => setTimeout(res, 5000));
+      const resp = await mockRequest();
       
       // Set App To Active Status
+      setData(resp.data);
       setAppStatus("active");
     } catch (err) {
       // Critical Request Failure
@@ -52,16 +54,14 @@ function App(props) {
 
   function setAppStatus(status) {
     // Set App Status
-    setState(({app}) => ({
-      app: {
-        ...app,
-        ...{status}
-      }
+    setApp((prevState) => ({
+      ...prevState,
+      ...{status}
     }));
   }
 
   // Render App
-  const { app, data } = state;
+  // data and app
 
   switch (app.status) {
     case "inactive":
